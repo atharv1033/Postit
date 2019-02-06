@@ -38,7 +38,7 @@ public class Posts_Adapter extends RecyclerView.Adapter<Posts_Adapter.Posts_View
 
     @Override
     public void onBindViewHolder(@NonNull Posts_Adapter.Posts_ViewHolder holder, int position) {
-        holder.postName_textView.setText(posts_List.get(position).getName());
+        holder.postName_textView.setText(posts_List.get(position).getTitle());
     }
 
     @Override

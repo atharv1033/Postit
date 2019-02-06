@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.atharv.postit.Adapter.Channels_Adapter;
 import com.atharv.postit.Model.Channels_Model;
@@ -33,6 +34,10 @@ public class MyChannels extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_channels);
 
+        username = getIntent().getStringExtra("username");
+        db = FirebaseFirestore.getInstance();
+        Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
+
         channels_RecyclerView = findViewById(R.id.recyclerView_myChannels);
         channels_RecyclerView.setLayoutManager(new LinearLayoutManager(this));
         channels_adapter = new Channels_Adapter(channels_modelList, new Channels_Adapter.OnChannelClickedListener() {
@@ -55,20 +60,24 @@ public class MyChannels extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        channels_modelList.clear();
-
         try{
+            Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
             db.collection("Channels").whereEqualTo("owner",username).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            for(DocumentSnapshot documentSnapshot : task.getResult()) {
-                                Channels_Model channel = documentSnapshot.toObject(Channels_Model.class);
+                            channels_modelList.clear();
+                            Toast.makeText(MyChannels.this, "Inside", Toast.LENGTH_SHORT).show();
+                            for(DocumentSnapshot doc : task.getResult()) {
+                                Channels_Model channel = doc.toObject(Channels_Model.class);
+                                channel.setId(doc.getId());
                                 channels_modelList.add(channel);
                             }
+                            channels_adapter.notifyDataSetChanged();
                         }
                     });
         } catch(Exception ex){
+            Toast.makeText(this, "Firebase error", Toast.LENGTH_SHORT).show();
             Log.e("FireBase Error", ex.getMessage());
         }
     }

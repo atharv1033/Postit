@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "571187397946-3dl448kbvarjd4nd8qj7olp9m0vv8ebk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.atharv.postit",
+            "certificate_hash": "5ab5f73d2a2318f73b13d003ec14f0523fe32556"
+          }
+        },
+        {
           "client_id": "571187397946-9k1ns65k2tiapk5tk3dqs0iora5g57nb.apps.googleusercontent.com",
           "client_type": 3
         }

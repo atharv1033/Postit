@@ -3,6 +3,7 @@ package com.atharv.postit.Activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,7 +11,12 @@ import android.view.View;
 import com.atharv.postit.Adapter.Posts_Adapter;
 import com.atharv.postit.Model.Posts_Model;
 import com.atharv.postit.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,12 +29,14 @@ public class Channel extends Activity {
     Posts_Adapter posts_adapter;
     List<Posts_Model> posts_modelList = new ArrayList<>();
 
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_channel);
+
+        db = FirebaseFirestore.getInstance();
 
         //Get Attributes of channel
         channel_id = this.getIntent().getExtras().getString("id");
@@ -61,11 +69,29 @@ public class Channel extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-
+        db.collection("Posts").whereEqualTo("channel_id",channel_id).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        posts_modelList.clear();
+                        for (DocumentSnapshot doc : task.getResult()) {
+                            Posts_Model post = doc.toObject(Posts_Model.class);
+                            post.setId(doc.getId());
+                            posts_modelList.add(post);
+                        }
+                        posts_adapter.notifyDataSetChanged();
+                    }
+                });
 
         posts_adapter.notifyDataSetChanged();
     }
 
     public void addPost(View view) {
+
+        Intent intent = new Intent(this,CreatePost.class);
+        intent.putExtra("username",username);
+        intent.putExtra("channel_id",channel_id);
+        startActivity(intent);
+
     }
 }

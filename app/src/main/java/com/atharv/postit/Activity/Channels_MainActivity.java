@@ -69,7 +69,6 @@ public class Channels_MainActivity extends AppCompatActivity
         //Main Code For authentication starts here
 
         if (user == null) {
-            Toast.makeText(this, "too bad", Toast.LENGTH_SHORT).show();
             // Authenticate if user is not added
             Intent signInIntent = AuthUI.getInstance()
                     .createSignInIntentBuilder()
@@ -77,7 +76,6 @@ public class Channels_MainActivity extends AppCompatActivity
                     .build();
             startActivityForResult(signInIntent, 9999);
         } else {
-            Toast.makeText(this, "here we are at line 80", Toast.LENGTH_SHORT).show();
             email = user.getEmail();
             // Checking if the user Already authenticated but username doesn't exist
             //if all ok then get username
@@ -153,8 +151,9 @@ public class Channels_MainActivity extends AppCompatActivity
                                     db.collection("Channels").document(id).get()
                                             .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                                 @Override
-                                                public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                                    Channels_Model channel = documentSnapshot.toObject(Channels_Model.class);
+                                                public void onSuccess(DocumentSnapshot doc) {
+                                                    Channels_Model channel = doc.toObject(Channels_Model.class);
+                                                    channel.setId(doc.getId());
                                                     channels_modelList.add(channel);
                                                 }
                                             });
