@@ -9,12 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.CreatePost"></activity>
+        <activity android:name=".Activity.ChannelView"></activity>
+        <activity
+            android:name=".Activity.Following"
+            android:label="@string/title_activity_following"
+            android:parentActivityName=".Activity.Channels_MainActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.atharv.postit.Activity.Channels_MainActivity" />
+        </activity>
+        <activity android:name=".Activity.CreatePost" />
         <activity android:name=".Activity.PersonSearch" />
         <activity android:name=".Activity.PostSearch" />
         <activity android:name=".Activity.ChannelSearch" />
         <activity android:name=".Activity.NewChannel" />
-        <activity android:name=".Activity.Following" />
         <activity android:name=".Activity.PinnedPost" />
         <activity android:name=".Activity.MyChannels" />
         <activity
