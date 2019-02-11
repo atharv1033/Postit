@@ -39,6 +39,7 @@ public class Channels_Adapter extends RecyclerView.Adapter<Channels_Adapter.Chan
         holder.name_textTextView.setText(channels_List.get(position).getName());
         holder.subject_textTextView.setText(channels_List.get(position).getSubject());
         holder.topic_TextView.setText(channels_List.get(position).getTopic());
+        holder.owner_TextView.setText(channels_List.get(position).getOwner());
     }
 
     @Override
@@ -48,13 +49,14 @@ public class Channels_Adapter extends RecyclerView.Adapter<Channels_Adapter.Chan
 
     public class Channels_ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name_textTextView,subject_textTextView,topic_TextView,all_container_textView;
+        TextView name_textTextView,subject_textTextView,topic_TextView,owner_TextView;
 
         public Channels_ViewHolder(View channelView) {
             super(channelView);
             name_textTextView = channelView.findViewById(R.id.name_textView);
             subject_textTextView = channelView.findViewById(R.id.subject_textView);
             topic_TextView = channelView.findViewById(R.id.topic_textView);
+            owner_TextView = channelView.findViewById(R.id.owner_textView);
 
             name_textTextView.setOnClickListener(new View.OnClickListener() {
                 @Override

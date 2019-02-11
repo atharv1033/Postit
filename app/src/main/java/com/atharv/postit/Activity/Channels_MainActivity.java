@@ -87,7 +87,7 @@ public class Channels_MainActivity extends AppCompatActivity
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 for(DocumentSnapshot doc : task.getResult()) {
                                     username = doc.getId();
-                                    Toast.makeText(Channels_MainActivity.this, username, Toast.LENGTH_SHORT).show();
+                                    onResume();
                                 }
 
                                 if(username == null) {
@@ -134,33 +134,34 @@ public class Channels_MainActivity extends AppCompatActivity
         channels_RecyclerView.setAdapter(channels_adapter);
 
     }
-
     @Override
     protected void onResume() {
         super.onResume();
-        channels_modelList.clear();
+        Toast.makeText(Channels_MainActivity.this,"this is " + username, Toast.LENGTH_SHORT).show();
         try {
                 db.collection("Users").document(username).collection("Added_Channels").get()
                         .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                String id;
+                                channels_modelList.clear();
+                                String channel_id;
                                 for(DocumentSnapshot doc : task.getResult()) {
-                                    id = doc.getId();
-
-                                    db.collection("Channels").document(id).get()
-                                            .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    channel_id = doc.getId();
+                                    db.collection("Channels").document(channel_id).get()
+                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                                 @Override
-                                                public void onSuccess(DocumentSnapshot doc) {
+                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                    DocumentSnapshot doc = task.getResult();
                                                     Channels_Model channel = doc.toObject(Channels_Model.class);
                                                     channel.setId(doc.getId());
                                                     channels_modelList.add(channel);
+
+                                                    channels_adapter.notifyDataSetChanged();
                                                 }
                                             });
                                 }
                             }
                         });
-                channels_adapter.notifyDataSetChanged();
         } catch (Exception ex) {
             Log.e("onResume FireBase",ex.getMessage());
         }
@@ -185,7 +186,7 @@ public class Channels_MainActivity extends AppCompatActivity
                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                     for(DocumentSnapshot doc : task.getResult()) {
                                         username = doc.getId();
-                                        Toast.makeText(Channels_MainActivity.this, username, Toast.LENGTH_SHORT).show();
+                                        onResume();
                                     }
 
                                     if(username == null) {

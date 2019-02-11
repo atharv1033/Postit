@@ -30,4 +30,11 @@
         android:background="#faf3a7"
         android:text="topic" />
 
+    <TextView
+        android:id="@+id/owner_textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Owner"
+        android:background="#FF8383"/>
+
 </LinearLayout>

@@ -61,7 +61,6 @@ public class MyChannels extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         try{
-            Toast.makeText(this, username, Toast.LENGTH_SHORT).show();
             db.collection("Channels").whereEqualTo("owner",username).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
