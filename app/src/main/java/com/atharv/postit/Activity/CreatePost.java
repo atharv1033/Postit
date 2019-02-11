@@ -17,6 +17,8 @@ import com.atharv.postit.R;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +28,8 @@ import java.util.Map;
 public class CreatePost extends AppCompatActivity {
 
     FirebaseFirestore db;
+    FirebaseStorage storage;
+    StorageReference storageRef;
 
     EditText postTitle_editText,postContent_editText;
     String postTitle,postContent,username,channel_id;
@@ -40,6 +44,9 @@ public class CreatePost extends AppCompatActivity {
         channel_id = getIntent().getStringExtra("channel_id");
 
         db = FirebaseFirestore.getInstance();
+        storage = FirebaseStorage.getInstance();
+        storageRef = storage.getReference();
+
         postTitle_editText = findViewById(R.id.postTitle_editText);
         postContent_editText = findViewById(R.id.postDescription_editText);
     }
@@ -62,6 +69,11 @@ public class CreatePost extends AppCompatActivity {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 String id = documentReference.getId();
+                                for(File_Model file_model : fileList) {
+                                    StorageReference fileRef = storageRef.child(id+"/"+file_model.getDisplayName());
+                                    fileRef.putFile(file_model.getFile());
+                                }
+
                             }
                         });
 

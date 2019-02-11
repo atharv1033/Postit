@@ -10,7 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class Post extends AppCompatActivity {
 
     String post_id, post_title, post_content;
-    TextView postTitle_textView,postContent_textView;
+    TextView postTitle_textView,postDescription_textView;
     FirebaseFirestore db;
 
     @Override
@@ -23,7 +23,7 @@ public class Post extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
 
         postTitle_textView = findViewById(R.id.postTitle_textView);
-        postContent_textView = findViewById(R.id.postContent_textView);
+        postDescription_textView = findViewById(R.id.postDescription_textView);
 
 
 
