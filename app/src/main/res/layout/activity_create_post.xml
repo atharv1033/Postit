@@ -51,7 +51,7 @@
         app:layout_constraintStart_toEndOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/postTitle_editText" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/uploadFiles_list"
         android:layout_width="match_parent"
         android:layout_height="335dp"

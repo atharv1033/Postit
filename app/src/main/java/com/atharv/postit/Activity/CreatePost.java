@@ -7,11 +7,15 @@ import android.net.Uri;
 import android.provider.OpenableColumns;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Toast;
 
+import com.atharv.postit.Adapter.Files_Adapter;
 import com.atharv.postit.Model.File_Model;
 import com.atharv.postit.R;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +25,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +36,10 @@ public class CreatePost extends AppCompatActivity {
     FirebaseStorage storage;
     StorageReference storageRef;
 
-    EditText postTitle_editText,postContent_editText;
-    String postTitle,postContent,username,channel_id;
+    RecyclerView fileListView;
+    Files_Adapter files_adapter;
+    EditText postTitle_editText, postContent_editText;
+    String postTitle, postContent, username, channel_id;
     List<File_Model> fileList = new ArrayList<>();
 
     @Override
@@ -47,8 +54,19 @@ public class CreatePost extends AppCompatActivity {
         storage = FirebaseStorage.getInstance();
         storageRef = storage.getReference();
 
+        fileListView = findViewById(R.id.uploadFiles_list);
+        fileListView.setLayoutManager(new LinearLayoutManager(this));
+        files_adapter = new Files_Adapter(fileList, new Files_Adapter.OnFileClickedListner() {
+            @Override
+            public void onFileClicked(File_Model file_model) {
+
+            }
+        });
+
         postTitle_editText = findViewById(R.id.postTitle_editText);
         postContent_editText = findViewById(R.id.postDescription_editText);
+
+        fileListView.setAdapter(files_adapter);
     }
 
     public void Create_Post(View view) {
@@ -56,22 +74,35 @@ public class CreatePost extends AppCompatActivity {
         postTitle = postTitle_editText.getText().toString();
         postContent = postContent_editText.getText().toString();
 
-        if(!(postTitle.equals("")) && !(postContent.equals(""))) {
+        if (!(postTitle.equals("")) && !(postContent.equals(""))) {
             try {
-                Map<String,Object> post = new HashMap<>();
-                post.put("title",postTitle);
-                post.put("content",postContent);
-                post.put("channel_id",channel_id);
-                post.put("owner",username);
+                Map<String, Object> post = new HashMap<>();
+                post.put("title", postTitle);
+                post.put("content", postContent);
+                post.put("channel_id", channel_id);
+                post.put("owner", username);
 
                 db.collection("Posts").add(post)
                         .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 String id = documentReference.getId();
-                                for(File_Model file_model : fileList) {
-                                    StorageReference fileRef = storageRef.child(id+"/"+file_model.getDisplayName());
+                                for (File_Model file_model : fileList) {
+                                    StorageReference fileRef = storageRef.child(id + "/" + file_model.getDisplayName());
                                     fileRef.putFile(file_model.getFile());
+
+                                    try{
+
+                                        Map<String,Object> fileMap = new HashMap<>();
+                                        fileMap.put("name",file_model.getDisplayName());
+                                        fileMap.put("url",fileRef.getDownloadUrl());
+
+                                        db.collection("Posts").document(id)
+                                                .collection("Files")
+                                                .add(fileMap);
+                                    } catch (Exception ex) {
+                                        Log.e("FireStorage : ",ex.getMessage());
+                                    }
                                 }
 
                             }
@@ -101,21 +132,32 @@ public class CreatePost extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        if(requestCode == 42) {
-            if(resultCode == RESULT_OK) {
-                if(data != null) {
+        if (requestCode == 42) {
+            if (resultCode == RESULT_OK) {
+                if (data != null) {
                     String displayName;
                     File_Model file_model;
                     ClipData clipData = data.getClipData();
-                    for(int i = 0; i < clipData.getItemCount(); i++)
-                    {
-                        ClipData.Item path = clipData.getItemAt(i);
-                        Uri file = path.getUri();
-                        Cursor cursor = this.getContentResolver().query(file,null, null, null, null, null);
+                    if (clipData != null) {
+                        for (int i = 0; i < clipData.getItemCount(); i++) {
+                            ClipData.Item path = clipData.getItemAt(i);
+                            Uri file = path.getUri();
+                            Cursor cursor = this.getContentResolver().query(file, null, null, null, null, null);
+                            if (cursor != null && cursor.moveToFirst()) {
+                                displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
+                                file_model = new File_Model(displayName, file);
+                                fileList.add(file_model);
+                                files_adapter.notifyDataSetChanged();
+                            }
+                        }
+                    } else {
+                        Uri file = data.getData();
+                        Cursor cursor = this.getContentResolver().query(file, null, null, null, null, null);
                         if (cursor != null && cursor.moveToFirst()) {
                             displayName = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME));
-                            file_model = new File_Model(displayName,file);
+                            file_model = new File_Model(displayName, file);
                             fileList.add(file_model);
+                            files_adapter.notifyDataSetChanged();
                         }
                     }
                 }
@@ -125,3 +167,4 @@ public class CreatePost extends AppCompatActivity {
         }
     }
 }
+

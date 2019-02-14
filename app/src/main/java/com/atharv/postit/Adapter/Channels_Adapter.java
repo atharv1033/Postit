@@ -15,7 +15,7 @@ import java.util.List;
 public class Channels_Adapter extends RecyclerView.Adapter<Channels_Adapter.Channels_ViewHolder> {
 
     public interface OnChannelClickedListener {
-        public void onChannelClicked(Channels_Model channels_model);
+        void onChannelClicked(Channels_Model channels_model);
     }
 
     List<Channels_Model> channels_List;
