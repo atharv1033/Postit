@@ -4,7 +4,7 @@ public class Posts_Model {
 
     String id,
            title ,
-           content,
+           description,
            channel_id,
            owner;
 
@@ -15,15 +15,15 @@ public class Posts_Model {
         this.id = id;
     }
 
-    public Posts_Model(String id, String title, String content) {
+    public Posts_Model(String id, String title, String description) {
         this.id = id;
         this.title = title;
-        this.content = content;
+        this.description = description;
     }
 
-    public Posts_Model(String title, String content, String channel_id, String owner) {
+    public Posts_Model(String title, String description, String channel_id, String owner) {
         this.title = title;
-        this.content = content;
+        this.description = description;
         this.channel_id = channel_id;
         this.owner = owner;
     }
@@ -60,11 +60,11 @@ public class Posts_Model {
         this.title = title;
     }
 
-    public String getContent() {
-        return content;
+    public String getdescription() {
+        return description;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setdescription(String description) {
+        this.description = description;
     }
 }

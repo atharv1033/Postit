@@ -54,6 +54,8 @@ public class Channel extends Activity {
             public void onPostClickListener(Posts_Model posts_model) {
                 Intent intent = new Intent(Channel.this,Post.class);
                 intent.putExtra("id",posts_model.getId());
+                intent.putExtra("title",posts_model.getTitle());
+                intent.putExtra("description",posts_model.getdescription());
                 startActivity(intent);
             }
 

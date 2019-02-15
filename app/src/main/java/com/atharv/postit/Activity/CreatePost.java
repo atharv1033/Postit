@@ -12,7 +12,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Toast;
 
 import com.atharv.postit.Adapter.Files_Adapter;
@@ -38,8 +37,8 @@ public class CreatePost extends AppCompatActivity {
 
     RecyclerView fileListView;
     Files_Adapter files_adapter;
-    EditText postTitle_editText, postContent_editText;
-    String postTitle, postContent, username, channel_id;
+    EditText postTitle_editText, postDescription_editText;
+    String postTitle, postDescription, username, channel_id;
     List<File_Model> fileList = new ArrayList<>();
 
     @Override
@@ -64,7 +63,7 @@ public class CreatePost extends AppCompatActivity {
         });
 
         postTitle_editText = findViewById(R.id.postTitle_editText);
-        postContent_editText = findViewById(R.id.postDescription_editText);
+        postDescription_editText = findViewById(R.id.postDescription_editText);
 
         fileListView.setAdapter(files_adapter);
     }
@@ -72,13 +71,13 @@ public class CreatePost extends AppCompatActivity {
     public void Create_Post(View view) {
 
         postTitle = postTitle_editText.getText().toString();
-        postContent = postContent_editText.getText().toString();
+        postDescription = postDescription_editText.getText().toString();
 
-        if (!(postTitle.equals("")) && !(postContent.equals(""))) {
+        if (!(postTitle.equals("")) && !(postDescription.equals(""))) {
             try {
                 Map<String, Object> post = new HashMap<>();
                 post.put("title", postTitle);
-                post.put("content", postContent);
+                post.put("description", postDescription);
                 post.put("channel_id", channel_id);
                 post.put("owner", username);
 
@@ -88,14 +87,14 @@ public class CreatePost extends AppCompatActivity {
                             public void onSuccess(DocumentReference documentReference) {
                                 String id = documentReference.getId();
                                 for (File_Model file_model : fileList) {
-                                    StorageReference fileRef = storageRef.child(id + "/" + file_model.getDisplayName());
-                                    fileRef.putFile(file_model.getFile());
+                                    StorageReference fileRef = storageRef.child(id + "/" + file_model.getName());
+                                    fileRef.putFile(file_model.getUri());
 
                                     try{
 
                                         Map<String,Object> fileMap = new HashMap<>();
-                                        fileMap.put("name",file_model.getDisplayName());
-                                        fileMap.put("url",fileRef.getDownloadUrl());
+                                        fileMap.put("name",file_model.getName());
+                                        fileMap.put("reference",id + "/" + file_model.getName());
 
                                         db.collection("Posts").document(id)
                                                 .collection("Files")

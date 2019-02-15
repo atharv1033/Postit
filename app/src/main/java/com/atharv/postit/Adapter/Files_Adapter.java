@@ -36,7 +36,7 @@ public class Files_Adapter extends RecyclerView.Adapter<Files_Adapter.Files_View
 
     @Override
     public void onBindViewHolder(@NonNull Files_Adapter.Files_ViewHolder holder, int position) {
-        holder.fileName.setText(files_list.get(position).getDisplayName());
+        holder.fileName.setText(files_list.get(position).getName());
     }
 
     @Override
