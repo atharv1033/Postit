@@ -8,11 +8,13 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.atharv.postit.Adapter.Channels_Adapter;
 import com.atharv.postit.Model.Channels_Model;
 import com.atharv.postit.R;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -28,7 +30,7 @@ public class ChannelSearch extends AppCompatActivity {
     List<Channels_Model> channels_List = new ArrayList<>();
     Channels_Adapter channels_adapter;
     FirebaseFirestore db;
-    String username , channel_name;
+    String username , searchText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +54,7 @@ public class ChannelSearch extends AppCompatActivity {
                 intent.putExtra("topic",channels_model.getTopic());
                 intent.putExtra("owner",channels_model.getOwner());
                 intent.putExtra("username",username);
+                intent.putExtra("CallingActivity","ChannelSearch");
                 startActivity(intent);
             }
         });
@@ -61,21 +64,51 @@ public class ChannelSearch extends AppCompatActivity {
 
     public void channel_search(View view) {
 
-        channel_name = channel_search_editText.getText().toString();
+        searchText = channel_search_editText.getText().toString();
 
-        db.collection("Channels").whereEqualTo("name",channel_name).get()
-                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+        if(searchText.contains("@") && searchText.endsWith(".com")) {
+            db.collection("Users").whereEqualTo("email", searchText).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            for (DocumentSnapshot doc : task.getResult()) {
+                                searchText = doc.getId();
+                            }
+                                db.collection("Channels").whereEqualTo("owner", searchText).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                channels_List.clear();
+                                                for (DocumentSnapshot doc : task.getResult()) {
+                                                    Channels_Model channel = doc.toObject(Channels_Model.class);
+                                                    channel.setId(doc.getId());
+                                                    Toast.makeText(ChannelSearch.this, "some", Toast.LENGTH_SHORT).show();
+                                                    channels_List.add(channel);
+                                                }
 
-                        channels_List.clear();
-                        for(DocumentSnapshot doc : task.getResult()) {
-                            Channels_Model channel = doc.toObject(Channels_Model.class);
-                            channel.setId(doc.getId());
-                            channels_List.add(channel);
+                                                channels_adapter.notifyDataSetChanged();
+                                            }
+                                        });
+                            }
+                    });
+        } else {
+
+            db.collection("Channels").whereEqualTo("owner", searchText).get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            channels_List.clear();
+                            for (DocumentSnapshot doc : task.getResult()) {
+                                Channels_Model channel = doc.toObject(Channels_Model.class);
+                                channel.setId(doc.getId());
+                                Toast.makeText(ChannelSearch.this, "some", Toast.LENGTH_SHORT).show();
+                                channels_List.add(channel);
+                            }
+
+                            channels_adapter.notifyDataSetChanged();
                         }
-                        channels_adapter.notifyDataSetChanged();
-                    }
-                });
+                    });
+        }
+
     }
 }

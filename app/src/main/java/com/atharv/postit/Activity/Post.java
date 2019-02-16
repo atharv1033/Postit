@@ -3,12 +3,16 @@ package com.atharv.postit.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,11 +36,12 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Post extends AppCompatActivity {
 
-    String post_id, post_title, post_description;
+    String post_id, post_title, post_description, username, CallingActivity;
     TextView postTitle_textView,postDescription_textView;
     RecyclerView fileListView;
     Files_Adapter files_adapter;
@@ -54,7 +59,14 @@ public class Post extends AppCompatActivity {
         post_id = this.getIntent().getStringExtra("id");
         post_title = this.getIntent().getStringExtra("title");
         post_description = this.getIntent().getStringExtra("description");
+        username = this.getIntent().getStringExtra("username");
+        CallingActivity = this.getIntent().getStringExtra("CallingActivity");
 
+        FloatingActionButton fab = findViewById(R.id.pinPost_fab);
+
+        if(!(CallingActivity.equals("Channel"))){
+            fab.hide();
+        }
 
         db = FirebaseFirestore.getInstance();
         storage = FirebaseStorage.getInstance();
@@ -78,11 +90,12 @@ public class Post extends AppCompatActivity {
                 String extension = DisplayName.substring(lastDot + 1);
                 String fileNameWithOutExt = DisplayName.replaceFirst("[.][^.]+$", "");
 
+                //File localFile = new File(Environment.getExternalStorageDirectory() + DisplayName);
                 File localFile = null;
                 try {
-                    localFile = File.createTempFile(fileNameWithOutExt, extension);
+                    localFile = File.createTempFile(fileNameWithOutExt,extension);
                 }catch (IOException io) {
-                    Log.e("File Reading Error", io.getMessage());
+                    Log.e("File Error", io.getMessage());
                 }
                 final File localFileForInitializeError = localFile;
                 pathReference.getFile(localFile).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
@@ -102,7 +115,7 @@ public class Post extends AppCompatActivity {
 
         try {
 
-            Uri uri = Uri.fromFile(url);
+            Uri uri = FileProvider.getUriForFile(this,"com.atharv.postit.fileprovider",url);
 
             Intent intent = new Intent(Intent.ACTION_VIEW);
             if (url.toString().contains(".doc") || url.toString().contains(".docx")) {
@@ -144,6 +157,7 @@ public class Post extends AppCompatActivity {
             }
 
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             this.startActivity(intent);
         } catch (ActivityNotFoundException e) {
             Toast.makeText(this, "No application found which can open the file", Toast.LENGTH_SHORT).show();
@@ -170,6 +184,21 @@ public class Post extends AppCompatActivity {
                     });
         }catch (Exception ex) {
 
+        }
+    }
+
+    public void pin_post(View view) {
+        try{
+            db.collection("Users").document(username).collection("PinnedPosts").document(post_id)
+                    .set(Collections.singletonMap("exists",true))
+                    .addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(Post.this, "Post Pinned", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        }catch (Exception ex) {
+            Log.e("Firebase Error",ex.getMessage());
         }
     }
 }

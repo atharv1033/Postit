@@ -51,6 +51,7 @@ public class MyChannels extends AppCompatActivity {
                 intent.putExtra("topic",channels_model.getTopic());
                 intent.putExtra("owner",channels_model.getOwner());
                 intent.putExtra("username",username);
+                intent.putExtra("CallingActivity","MyChannels");
                 startActivity(intent);
             }
         });

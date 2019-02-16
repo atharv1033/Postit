@@ -16,10 +16,6 @@
             android:id="@+id/nav_new_channel"
             android:icon="@android:drawable/ic_menu_add"
             android:title="New Channel" />
-        <item
-            android:id="@+id/nav_following"
-            android:icon="@android:drawable/ic_menu_today"
-            android:title="Following" />
     </group>
 
     <item
@@ -30,13 +26,9 @@
                 android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="Channel" />
             <item
-                android:id="@+id/nav_post_search"
-                android:icon="@android:drawable/ic_input_get"
-                android:title="Post" />
-            <item
-                android:id="@+id/nav_person_search"
-                android:icon="@android:drawable/ic_menu_my_calendar"
-                android:title="Person" />
+                android:id="@+id/nav_tag_search"
+                android:icon="@android:drawable/ic_menu_sort_by_size"
+                android:title="#TAG" />
         </menu>
     </item>
 

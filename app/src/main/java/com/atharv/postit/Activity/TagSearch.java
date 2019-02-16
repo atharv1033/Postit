@@ -6,14 +6,14 @@ import android.view.View;
 
 import com.atharv.postit.R;
 
-public class PostSearch extends AppCompatActivity {
+public class TagSearch extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_post_search);
+        setContentView(R.layout.activity_tag_search);
     }
 
-    public void post_search(View view) {
+    public void tag_search(View view) {
     }
 }

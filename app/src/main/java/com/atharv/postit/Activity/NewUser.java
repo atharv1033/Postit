@@ -47,6 +47,11 @@ public class NewUser extends AppCompatActivity {
         fullName = fullName_editText.getText().toString();
         mobileNumber = mobileNumber_editText.getText().toString();
 
+        if(userName.contains("@") || userName.contains(".com")){
+            Toast.makeText(this, "Cannot Contain @ or .com", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         Map<String,Object> userData = new HashMap<>();
         userData.put("Full Name",fullName);
         userData.put("Mob no.",mobileNumber);

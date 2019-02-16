@@ -128,6 +128,7 @@ public class Channels_MainActivity extends AppCompatActivity
                 intent.putExtra("topic",channels_model.getTopic());
                 intent.putExtra("owner",channels_model.getOwner());
                 intent.putExtra("username",username);
+                intent.putExtra("CallingActivity","Channel_MainActivity");
                 startActivity(intent);
             }
         });
@@ -245,18 +246,13 @@ public class Channels_MainActivity extends AppCompatActivity
             startActivity(new Intent(this,MyChannels.class).putExtra("username",username));
         } else if (id == R.id.nav_pinned_posts) {
             startActivity(new Intent(this,PinnedPost.class).putExtra("username",username));
-        } else if (id == R.id.nav_following) {
-            startActivity(new Intent(this,Following.class).putExtra("username",username));
-        } else if (id == R.id.nav_new_channel) {
+        }  else if (id == R.id.nav_new_channel) {
             startActivity(new Intent(this,NewChannel.class).putExtra("username",username));
         } else if (id == R.id.nav_channel_search) {
             startActivity(new Intent(this,ChannelSearch.class).putExtra("username",username));
-        } else if (id == R.id.nav_post_search) {
-
-        } else if (id == R.id.nav_person_search) {
-            Toast.makeText(this, email, Toast.LENGTH_SHORT).show();
+        } else if (id == R.id.nav_tag_search) {
+            startActivity(new Intent(this, TagSearch.class).putExtra("username", username));
         }
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

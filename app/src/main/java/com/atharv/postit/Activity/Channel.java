@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -23,7 +24,7 @@ import java.util.List;
 public class Channel extends Activity {
 
     //All Attributes of a channel
-    String channel_id, channel_name, channel_subject, channel_topic, channel_owner, username;
+    String channel_id, channel_name, channel_subject, channel_topic, channel_owner, username, callingActivity;
 
     RecyclerView post_RecyclerView;
     Posts_Adapter posts_adapter;
@@ -39,12 +40,19 @@ public class Channel extends Activity {
         db = FirebaseFirestore.getInstance();
 
         //Get Attributes of channel
-        channel_id = this.getIntent().getExtras().getString("id");
-        channel_name = this.getIntent().getExtras().getString("name");
-        channel_subject = this.getIntent().getExtras().getString("subject");
-        channel_topic = this.getIntent().getExtras().getString("topic");
-        channel_owner = this.getIntent().getExtras().getString("owner");
+        channel_id = this.getIntent().getStringExtra("id");
+        channel_name = this.getIntent().getStringExtra("name");
+        channel_subject = this.getIntent().getStringExtra("subject");
+        channel_topic = this.getIntent().getStringExtra("topic");
+        channel_owner = this.getIntent().getStringExtra("owner");
         username = this.getIntent().getStringExtra("username");
+        callingActivity = this.getIntent().getStringExtra("CallingActivity");
+
+        FloatingActionButton fab = findViewById(R.id.fab_addPost);
+
+        if(!(callingActivity.equals("MyChannels"))) {
+            fab.hide();
+        }
 
         //Main Code for recyclerView List for posts
         post_RecyclerView = findViewById(R.id.posts_recyclerView);
@@ -56,6 +64,8 @@ public class Channel extends Activity {
                 intent.putExtra("id",posts_model.getId());
                 intent.putExtra("title",posts_model.getTitle());
                 intent.putExtra("description",posts_model.getdescription());
+                intent.putExtra("username",username);
+                intent.putExtra("CallingActivity","Channel");
                 startActivity(intent);
             }
 
