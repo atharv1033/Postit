@@ -250,8 +250,6 @@ public class Channels_MainActivity extends AppCompatActivity
             startActivity(new Intent(this,NewChannel.class).putExtra("username",username));
         } else if (id == R.id.nav_channel_search) {
             startActivity(new Intent(this,ChannelSearch.class).putExtra("username",username));
-        } else if (id == R.id.nav_tag_search) {
-            startActivity(new Intent(this, TagSearch.class).putExtra("username", username));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

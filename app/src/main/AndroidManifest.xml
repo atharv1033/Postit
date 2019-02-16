@@ -12,7 +12,6 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.TagSearch"></activity>
         <activity android:name=".Activity.ChannelView" />
         <activity android:name=".Activity.CreatePost" />
         <activity android:name=".Activity.ChannelSearch" />

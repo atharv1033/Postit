@@ -15,8 +15,8 @@ import java.util.Map;
 
 public class NewChannel extends AppCompatActivity {
 
-    EditText editText_ChannelName,editText_ChannelSubject,editText_ChannelTopic;
-    String channelName,channelSubject,channelTopic,username;
+    EditText editText_ChannelName,editText_ChannelSubject,editText_ChannelTopic,editText_ChannelTags;
+    String channelName,channelSubject,channelTopic,username, channelTags;
     FirebaseFirestore db;
 
     @Override
@@ -29,6 +29,7 @@ public class NewChannel extends AppCompatActivity {
         editText_ChannelName = findViewById(R.id.Cname);
         editText_ChannelSubject = findViewById(R.id.Csubject);
         editText_ChannelTopic = findViewById(R.id.Ctopic);
+        editText_ChannelTags = findViewById(R.id.Ctags);
 
         username = getIntent().getStringExtra("username");
 
@@ -41,6 +42,15 @@ public class NewChannel extends AppCompatActivity {
         channelName = editText_ChannelName.getText().toString();
         channelSubject = editText_ChannelSubject.getText().toString();
         channelTopic = editText_ChannelTopic.getText().toString();
+        channelTags = editText_ChannelTags.getText().toString();
+
+        if(!(channelTags.contains("#"))){
+            Toast.makeText(this, "Tags should start with #", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        channelTags = channelTags.replace(" ","");
+        String[] TagArray = channelTags.split("#");
 
         if(!channelName.equals("") && !channelSubject.equals("") && !channelSubject.equals("")) {
             Map<String, Object> channel = new HashMap<>();
@@ -48,6 +58,7 @@ public class NewChannel extends AppCompatActivity {
             channel.put("owner", username);
             channel.put("subject", channelSubject);
             channel.put("topic", channelTopic);
+            channel.put("tags",TagArray);
 
             try {
                 db.collection("Channels").add(channel);

@@ -8,6 +8,25 @@ public class Channels_Model {
                    topic,
                    owner;
 
+    private String[] tags;
+
+    public String[] getTags() {
+        return tags;
+    }
+
+    public void setTags(String[] tags) {
+        this.tags = tags;
+    }
+
+    public Channels_Model(String id, String name, String subject, String topic, String owner, String[] tags) {
+        this.id = id;
+        this.name = name;
+        this.subject = subject;
+        this.topic = topic;
+        this.owner = owner;
+        this.tags = tags;
+    }
+
     public Channels_Model() {
     }
 

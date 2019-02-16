@@ -16,8 +16,8 @@ import java.util.Collections;
 
 public class ChannelView extends AppCompatActivity {
 
-    String channel_id, channel_name, channel_subject, channel_topic, channel_owner, username;
-    TextView name_textView,subject_textView,topic_textView,owner_textView;
+    String channel_id, channel_name, channel_subject, channel_topic, channel_owner, username, tags;
+    TextView name_textView,subject_textView,topic_textView,owner_textView,tags_textView;
     FirebaseFirestore db;
 
     @Override
@@ -34,16 +34,19 @@ public class ChannelView extends AppCompatActivity {
         channel_topic = this.getIntent().getExtras().getString("topic");
         channel_owner = this.getIntent().getExtras().getString("owner");
         username = this.getIntent().getStringExtra("username");
+        tags = this.getIntent().getStringExtra("tags");
 
         name_textView = findViewById(R.id.channelName_textView);
         subject_textView = findViewById(R.id.channelSubject_textView);
         topic_textView = findViewById(R.id.channelTopic_textView);
         owner_textView = findViewById(R.id.channelOwner_textView);
+        tags_textView = findViewById(R.id.channelTags_textView);
 
         name_textView.setText(channel_name);
         subject_textView.setText(channel_subject);
         topic_textView.setText(channel_topic);
         owner_textView.setText(channel_owner);
+        tags_textView.setText(tags);
 
     }
 

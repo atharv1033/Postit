@@ -47,6 +47,14 @@ public class ChannelSearch extends AppCompatActivity {
         channels_adapter = new Channels_Adapter(channels_List, new Channels_Adapter.OnChannelClickedListener() {
             @Override
             public void onChannelClicked(Channels_Model channels_model) {
+
+                String tags = "";
+                if(channels_model.getTags() != null) {
+                    for(String tag : channels_model.getTags()){
+                        tags = tags + "#" +tag;
+                    }
+                }
+
                 Intent intent = new Intent(ChannelSearch.this,ChannelView.class);
                 intent.putExtra("id",channels_model.getId());
                 intent.putExtra("name",channels_model.getName());
@@ -54,7 +62,7 @@ public class ChannelSearch extends AppCompatActivity {
                 intent.putExtra("topic",channels_model.getTopic());
                 intent.putExtra("owner",channels_model.getOwner());
                 intent.putExtra("username",username);
-                intent.putExtra("CallingActivity","ChannelSearch");
+                intent.putExtra("tags",tags);
                 startActivity(intent);
             }
         });
@@ -66,7 +74,7 @@ public class ChannelSearch extends AppCompatActivity {
 
         searchText = channel_search_editText.getText().toString();
 
-        if(searchText.contains("@") && searchText.endsWith(".com")) {
+        if(searchText.contains("@") && searchText.endsWith(".com") && !(searchText.contains("#"))) {
             db.collection("Users").whereEqualTo("email", searchText).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -91,7 +99,29 @@ public class ChannelSearch extends AppCompatActivity {
                                         });
                             }
                     });
-        } else {
+            return;
+        } else if(searchText.startsWith("#")){
+            channels_List.clear();
+            searchText = searchText.replace(" ","");
+            String[] TagArray = searchText.split("#");
+            for( String tag : TagArray ) {
+                db.collection("Channels").whereArrayContains("tags",tag).get()
+                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                for(DocumentSnapshot doc : task.getResult()) {
+                                    Channels_Model channel = doc.toObject(Channels_Model.class);
+                                    channel.setId(doc.getId());
+                                    if(!(channels_List.contains(channel))) {
+                                        channels_List.add(channel);
+                                    }
+                                }
+                            }
+                        });
+            }
+            return;
+        }
+        else {
 
             db.collection("Channels").whereEqualTo("owner", searchText).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -108,6 +138,7 @@ public class ChannelSearch extends AppCompatActivity {
                             channels_adapter.notifyDataSetChanged();
                         }
                     });
+            return;
         }
 
     }
