@@ -71,7 +71,11 @@ public class Channel extends Activity {
 
             @Override
             public void onPostLongClickListener(Posts_Model posts_model) {
-
+                if(callingActivity.equals("MyChannels")) {
+                    db.collection("Posts").document(posts_model.getId()).delete();
+                    posts_modelList.remove(posts_model);
+                    posts_adapter.notifyDataSetChanged();
+                }
             }
         });
         post_RecyclerView.setAdapter(posts_adapter);
@@ -95,7 +99,7 @@ public class Channel extends Activity {
                     }
                 });
 
-        posts_adapter.notifyDataSetChanged();
+       // posts_adapter.notifyDataSetChanged();
     }
 
     public void addPost(View view) {

@@ -1,5 +1,8 @@
 package com.atharv.postit.Model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Channels_Model {
 
     private String id,
@@ -8,22 +11,21 @@ public class Channels_Model {
                    topic,
                    owner;
 
-    private String[] tags;
+    private List<String> tags = new ArrayList<>();
 
-    public String[] getTags() {
-        return tags;
-    }
-
-    public void setTags(String[] tags) {
-        this.tags = tags;
-    }
-
-    public Channels_Model(String id, String name, String subject, String topic, String owner, String[] tags) {
-        this.id = id;
+    public Channels_Model(String name, String subject, String topic, String owner, List<String> tags) {
         this.name = name;
         this.subject = subject;
         this.topic = topic;
         this.owner = owner;
+        this.tags = tags;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<String> tags) {
         this.tags = tags;
     }
 

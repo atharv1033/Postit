@@ -121,17 +121,24 @@ public class Channels_MainActivity extends AppCompatActivity
             @Override
             //Send user to the channel he clicked
             public void onChannelClicked(Channels_Model channels_model) {
-                Intent intent = new Intent(Channels_MainActivity.this,Channel.class);
-                intent.putExtra("id",channels_model.getId());
-                intent.putExtra("name",channels_model.getName());
-                intent.putExtra("subject",channels_model.getSubject());
-                intent.putExtra("topic",channels_model.getTopic());
-                intent.putExtra("owner",channels_model.getOwner());
-                intent.putExtra("username",username);
-                intent.putExtra("CallingActivity","Channel_MainActivity");
+                Intent intent = new Intent(Channels_MainActivity.this, Channel.class);
+                intent.putExtra("id", channels_model.getId());
+                intent.putExtra("name", channels_model.getName());
+                intent.putExtra("subject", channels_model.getSubject());
+                intent.putExtra("topic", channels_model.getTopic());
+                intent.putExtra("owner", channels_model.getOwner());
+                intent.putExtra("username", username);
+                intent.putExtra("CallingActivity", "Channel_MainActivity");
                 startActivity(intent);
             }
-        });
+        },
+                new Channels_Adapter.OnChannelLongClickedListener() {
+                    @Override
+                    public void onChannelLongClicked(Channels_Model channels_model) {
+
+                    }
+                }
+        );
         channels_RecyclerView.setAdapter(channels_adapter);
 
     }

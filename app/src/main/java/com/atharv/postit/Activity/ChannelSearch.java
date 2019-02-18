@@ -49,23 +49,30 @@ public class ChannelSearch extends AppCompatActivity {
             public void onChannelClicked(Channels_Model channels_model) {
 
                 String tags = "";
-                if(channels_model.getTags() != null) {
-                    for(String tag : channels_model.getTags()){
-                        tags = tags + "#" +tag;
+                if (channels_model.getTags() != null) {
+                    for (String tag : channels_model.getTags()) {
+                        tags = tags + "#" + tag;
                     }
                 }
 
-                Intent intent = new Intent(ChannelSearch.this,ChannelView.class);
-                intent.putExtra("id",channels_model.getId());
-                intent.putExtra("name",channels_model.getName());
-                intent.putExtra("subject",channels_model.getSubject());
-                intent.putExtra("topic",channels_model.getTopic());
-                intent.putExtra("owner",channels_model.getOwner());
-                intent.putExtra("username",username);
-                intent.putExtra("tags",tags);
+                Intent intent = new Intent(ChannelSearch.this, ChannelView.class);
+                intent.putExtra("id", channels_model.getId());
+                intent.putExtra("name", channels_model.getName());
+                intent.putExtra("subject", channels_model.getSubject());
+                intent.putExtra("topic", channels_model.getTopic());
+                intent.putExtra("owner", channels_model.getOwner());
+                intent.putExtra("username", username);
+                intent.putExtra("tags", tags);
                 startActivity(intent);
             }
-        });
+        },
+                new Channels_Adapter.OnChannelLongClickedListener() {
+                    @Override
+                    public void onChannelLongClicked(Channels_Model channels_model) {
+
+                    }
+                }
+        );
 
         channel_search_recyclerView.setAdapter(channels_adapter);
     }

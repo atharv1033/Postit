@@ -1,7 +1,9 @@
 package com.atharv.postit.Activity;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,15 +46,49 @@ public class MyChannels extends AppCompatActivity {
             @Override
             //Send user to the channel he clicked
             public void onChannelClicked(Channels_Model channels_model) {
-                Intent intent = new Intent(MyChannels.this,Channel.class);
-                intent.putExtra("id",channels_model.getId());
-                intent.putExtra("name",channels_model.getName());
-                intent.putExtra("subject",channels_model.getSubject());
-                intent.putExtra("topic",channels_model.getTopic());
-                intent.putExtra("owner",channels_model.getOwner());
-                intent.putExtra("username",username);
-                intent.putExtra("CallingActivity","MyChannels");
+                Intent intent = new Intent(MyChannels.this, Channel.class);
+                intent.putExtra("id", channels_model.getId());
+                intent.putExtra("name", channels_model.getName());
+                intent.putExtra("subject", channels_model.getSubject());
+                intent.putExtra("topic", channels_model.getTopic());
+                intent.putExtra("owner", channels_model.getOwner());
+                intent.putExtra("username", username);
+                intent.putExtra("CallingActivity", "MyChannels");
                 startActivity(intent);
+            }
+        }, new Channels_Adapter.OnChannelLongClickedListener() {
+            @Override
+            public void onChannelLongClicked(final Channels_Model channels_model) {
+                DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which){
+                            case DialogInterface.BUTTON_POSITIVE:
+                                db.collection("Channels").document(channels_model.getId()).delete();
+                                db.collection("Posts").whereEqualTo("channel_id",channels_model.getId()).get()
+                                        .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                for(DocumentSnapshot doc : task.getResult()){
+                                                    db.collection("Posts").document(doc.getId()).delete();
+                                                }
+                                            }
+                                        });
+                                channels_modelList.remove(channels_model);
+                                channels_adapter.notifyDataSetChanged();
+                                Toast.makeText(MyChannels.this, "channel deleted", Toast.LENGTH_SHORT).show();
+                                break;
+
+                            case DialogInterface.BUTTON_NEGATIVE:
+                                Toast.makeText(MyChannels.this, "Channel not Deleted", Toast.LENGTH_SHORT).show();
+                                break;
+                        }
+                    }
+                };
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyChannels.this);
+                builder.setMessage("Delete this Channel?").setPositiveButton("Yes", dialogClickListener)
+                        .setNegativeButton("No", dialogClickListener).show();
             }
         });
         channels_RecyclerView.setAdapter(channels_adapter);

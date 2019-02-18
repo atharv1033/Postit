@@ -25,10 +25,6 @@
                 android:id="@+id/nav_channel_search"
                 android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="Channel" />
-            <item
-                android:id="@+id/nav_tag_search"
-                android:icon="@android:drawable/ic_menu_sort_by_size"
-                android:title="#TAG" />
         </menu>
     </item>
 

@@ -18,12 +18,18 @@ public class Channels_Adapter extends RecyclerView.Adapter<Channels_Adapter.Chan
         void onChannelClicked(Channels_Model channels_model);
     }
 
-    List<Channels_Model> channels_List;
-    OnChannelClickedListener listener ;
+    public interface OnChannelLongClickedListener {
+        void onChannelLongClicked(Channels_Model channels_model);
+    }
 
-    public Channels_Adapter(List<Channels_Model> channels_List, OnChannelClickedListener listener) {
+    List<Channels_Model> channels_List;
+    OnChannelClickedListener listener;
+    OnChannelLongClickedListener longClickedListener;
+
+    public Channels_Adapter(List<Channels_Model> channels_List, OnChannelClickedListener listener, OnChannelLongClickedListener longClickedListener) {
         this.channels_List = channels_List;
         this.listener = listener;
+        this.longClickedListener = longClickedListener;
     }
 
     @NonNull
@@ -36,8 +42,8 @@ public class Channels_Adapter extends RecyclerView.Adapter<Channels_Adapter.Chan
 
     @Override
     public void onBindViewHolder(@NonNull Channels_Adapter.Channels_ViewHolder holder, int position) {
-        holder.name_textTextView.setText(channels_List.get(position).getName());
-        holder.subject_textTextView.setText(channels_List.get(position).getSubject());
+        holder.name_TextView.setText(channels_List.get(position).getName());
+        holder.subject_TextView.setText(channels_List.get(position).getSubject());
         holder.topic_TextView.setText(channels_List.get(position).getTopic());
         holder.owner_TextView.setText(channels_List.get(position).getOwner());
     }
@@ -49,23 +55,23 @@ public class Channels_Adapter extends RecyclerView.Adapter<Channels_Adapter.Chan
 
     public class Channels_ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView name_textTextView,subject_textTextView,topic_TextView,owner_TextView;
+        TextView name_TextView,subject_TextView,topic_TextView,owner_TextView;
 
         public Channels_ViewHolder(View channelView) {
             super(channelView);
-            name_textTextView = channelView.findViewById(R.id.name_textView);
-            subject_textTextView = channelView.findViewById(R.id.subject_textView);
+            name_TextView = channelView.findViewById(R.id.name_textView);
+            subject_TextView = channelView.findViewById(R.id.subject_textView);
             topic_TextView = channelView.findViewById(R.id.topic_textView);
             owner_TextView = channelView.findViewById(R.id.owner_textView);
 
-            name_textTextView.setOnClickListener(new View.OnClickListener() {
+            name_TextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onChannelClicked(channels_List.get(getAdapterPosition()));
 
                     }
             });
-            subject_textTextView.setOnClickListener(new View.OnClickListener() {
+            subject_TextView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     listener.onChannelClicked(channels_List.get(getAdapterPosition()));
@@ -77,6 +83,29 @@ public class Channels_Adapter extends RecyclerView.Adapter<Channels_Adapter.Chan
                 public void onClick(View v) {
                     listener.onChannelClicked(channels_List.get(getAdapterPosition()));
 
+                }
+            });
+
+            name_TextView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    longClickedListener.onChannelLongClicked(channels_List.get(getAdapterPosition()));
+                    return true;
+                }
+            });
+
+            subject_TextView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    longClickedListener.onChannelLongClicked(channels_List.get(getAdapterPosition()));
+                    return true;
+                }
+            });
+            topic_TextView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    longClickedListener.onChannelLongClicked(channels_List.get(getAdapterPosition()));
+                    return true;
                 }
             });
 
