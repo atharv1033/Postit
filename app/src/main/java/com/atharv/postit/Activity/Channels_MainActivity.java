@@ -42,6 +42,7 @@ public class Channels_MainActivity extends AppCompatActivity
     FirebaseUser user = firebaseAuth.getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     String username , email ;
+    String channel_id;
 
     //TextView header_username, header_email;
 
@@ -152,21 +153,25 @@ public class Channels_MainActivity extends AppCompatActivity
                             @Override
                             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                 channels_modelList.clear();
-                                String channel_id;
                                 for(DocumentSnapshot doc : task.getResult()) {
                                     channel_id = doc.getId();
-                                    db.collection("Channels").document(channel_id).get()
-                                            .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                                    DocumentSnapshot doc = task.getResult();
-                                                    Channels_Model channel = doc.toObject(Channels_Model.class);
-                                                    channel.setId(doc.getId());
-                                                    channels_modelList.add(channel);
+                                        db.collection("Channels").document(channel_id).get()
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                                        DocumentSnapshot doc = task.getResult();
+                                                        try {
+                                                            Channels_Model channel = doc.toObject(Channels_Model.class);
+                                                            channel.setId(doc.getId());
+                                                            channels_modelList.add(channel);
 
-                                                    channels_adapter.notifyDataSetChanged();
-                                                }
-                                            });
+                                                            channels_adapter.notifyDataSetChanged();
+                                                        } catch (Exception ex){
+                                                            Log.e("Firebase error",ex.getMessage());
+                                                            db.collection("Users").document(username).collection("Added_Channels").document(channel_id).delete();
+                                                        }
+                                                    }
+                                                });
                                 }
                             }
                         });
@@ -237,7 +242,15 @@ public class Channels_MainActivity extends AppCompatActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.action_changeAccount) {
+            AuthUI.getInstance().delete(this)
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Intent intent = new Intent(Channels_MainActivity.this, Channels_MainActivity.class);
+                            startActivity(intent);
+                        }
+                    });
             return true;
         }
 
