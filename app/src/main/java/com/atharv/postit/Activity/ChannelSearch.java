@@ -14,7 +14,6 @@ import com.atharv.postit.Adapter.Channels_Adapter;
 import com.atharv.postit.Model.Channels_Model;
 import com.atharv.postit.R;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -55,7 +54,7 @@ public class ChannelSearch extends AppCompatActivity {
                     }
                 }
 
-                Intent intent = new Intent(ChannelSearch.this, ChannelView.class);
+                Intent intent = new Intent(ChannelSearch.this, ViewChannel.class);
                 intent.putExtra("id", channels_model.getId());
                 intent.putExtra("name", channels_model.getName());
                 intent.putExtra("subject", channels_model.getSubject());
@@ -81,7 +80,7 @@ public class ChannelSearch extends AppCompatActivity {
 
         searchText = channel_search_editText.getText().toString();
 
-        if(searchText.contains("@") && searchText.endsWith(".com") && !(searchText.contains("#"))) {
+       /* if(searchText.contains("@") && searchText.endsWith(".com") && !(searchText.contains("#"))) {
             db.collection("Users").whereEqualTo("email", searchText).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -107,7 +106,8 @@ public class ChannelSearch extends AppCompatActivity {
                             }
                     });
             return;
-        } else if(searchText.startsWith("#")){
+        } else */
+        if(searchText.startsWith("#")){
             channels_List.clear();
             searchText = searchText.replace(" ","");
             String[] TagArray = searchText.split("#");
@@ -122,6 +122,7 @@ public class ChannelSearch extends AppCompatActivity {
                                     if(!(channels_List.contains(channel))) {
                                         channels_List.add(channel);
                                     }
+                                    channels_adapter.notifyDataSetChanged();
                                 }
                             }
                         });
@@ -130,7 +131,7 @@ public class ChannelSearch extends AppCompatActivity {
         }
         else {
 
-            db.collection("Channels").whereEqualTo("owner", searchText).get()
+            db.collection("Channels").whereArrayContains("searchArray",searchText).get()
                     .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {

@@ -16,6 +16,10 @@
             android:id="@+id/nav_new_channel"
             android:icon="@android:drawable/ic_menu_add"
             android:title="New Channel" />
+        <item
+            android:id="@+id/nav_following"
+            android:icon="@drawable/fui_ic_anonymous_white_24dp"
+            android:title="Following" />
     </group>
 
     <item
@@ -25,6 +29,10 @@
                 android:id="@+id/nav_channel_search"
                 android:icon="@android:drawable/ic_menu_sort_by_size"
                 android:title="Channel" />
+            <item
+                android:id="@+id/nav_user_search"
+                android:icon="@drawable/fui_ic_anonymous_white_24dp"
+                android:title="Users" />
         </menu>
     </item>
 

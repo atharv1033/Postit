@@ -12,7 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Activity.ChannelView" />
+        <activity android:name=".Activity.Following"></activity>
+        <activity android:name=".Activity.ViewUser" />
+        <activity android:name=".Activity.SearchUser" />
+        <activity android:name=".Activity.ViewChannel" />
         <activity android:name=".Activity.CreatePost" />
         <activity android:name=".Activity.ChannelSearch" />
         <activity android:name=".Activity.NewChannel" />

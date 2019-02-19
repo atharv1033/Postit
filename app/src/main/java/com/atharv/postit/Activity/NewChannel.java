@@ -10,7 +10,9 @@ import android.widget.Toast;
 import com.atharv.postit.R;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NewChannel extends AppCompatActivity {
@@ -44,13 +46,32 @@ public class NewChannel extends AppCompatActivity {
         channelTopic = editText_ChannelTopic.getText().toString();
         channelTags = editText_ChannelTags.getText().toString();
 
+        if (channelName.length() > 10){
+            Toast.makeText(this, "Name should be less than 10 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if(!(channelTags.contains("#"))){
             Toast.makeText(this, "Tags should start with #", Toast.LENGTH_SHORT).show();
             return;
         }
 
         channelTags = channelTags.replace(" ","");
-        String[] TagArray = channelTags.split("#");
+        channelTags = channelTags.substring(1);
+        String[] IterateArray = channelTags.split("#");
+        List<String> TagArray = new ArrayList<>();
+
+        for(String i : IterateArray){
+
+            TagArray.add(i);
+        }
+
+        List<String> searchArray = new ArrayList<>();
+        String temp_str = "";
+        for(int i=0; i< channelName.length() ; i++) {
+            temp_str = temp_str + channelName.charAt(i);
+            searchArray.add(temp_str);
+        }
 
         if(!channelName.equals("") && !channelSubject.equals("") && !channelSubject.equals("")) {
             Map<String, Object> channel = new HashMap<>();
@@ -59,6 +80,7 @@ public class NewChannel extends AppCompatActivity {
             channel.put("subject", channelSubject);
             channel.put("topic", channelTopic);
             channel.put("tags",TagArray);
+            channel.put("searchArray",searchArray);
 
             try {
                 db.collection("Channels").add(channel);

@@ -55,7 +55,7 @@ public class PinnedPost extends AppCompatActivity {
 
             @Override
             public void onPostLongClickListener(Posts_Model posts_model) {
-
+                db.collection("Users").document(username).collection("PinnedPosts").document(posts_model.getId()).delete();
             }
         });
         Pinned_post_RecyclerView.setAdapter(Pinned_posts_adapter);

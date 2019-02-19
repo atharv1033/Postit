@@ -136,7 +136,7 @@ public class Channels_MainActivity extends AppCompatActivity
                 new Channels_Adapter.OnChannelLongClickedListener() {
                     @Override
                     public void onChannelLongClicked(Channels_Model channels_model) {
-
+                        db.collection("Users").document(username).collection("Added_Channels").document(channels_model.getId()).delete();
                     }
                 }
         );
@@ -270,6 +270,10 @@ public class Channels_MainActivity extends AppCompatActivity
             startActivity(new Intent(this,NewChannel.class).putExtra("username",username));
         } else if (id == R.id.nav_channel_search) {
             startActivity(new Intent(this,ChannelSearch.class).putExtra("username",username));
+        } else if (id == R.id.nav_user_search) {
+            startActivity(new Intent(this,SearchUser.class).putExtra("username",username));
+        } else if (id == R.id.nav_following) {
+            startActivity(new Intent(this, Following.class).putExtra("username", username));
         }
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);

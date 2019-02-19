@@ -3,6 +3,7 @@ package com.atharv.postit.Activity;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -14,10 +15,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.Collections;
 
-public class ChannelView extends AppCompatActivity {
+public class ViewChannel extends AppCompatActivity {
 
     String channel_id, channel_name, channel_subject, channel_topic, channel_owner, username, tags;
-    TextView name_textView,subject_textView,topic_textView,owner_textView,tags_textView;
+    TextView name_textView, subject_textView, topic_textView, owner_textView, tags_textView;
     FirebaseFirestore db;
 
     @Override
@@ -52,16 +53,17 @@ public class ChannelView extends AppCompatActivity {
 
     public void subscribe_channel(View view) {
 
-        db.collection("Users").document(username).collection("Added_Channels").document(channel_id).set(Collections.singletonMap("exists",true))
-                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
-                        Toast.makeText(ChannelView.this, "Channel Subscribed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
-
-    public void back_arrow(View view) {
-        super.onBackPressed();
+        try {
+            db.collection("Users").document(username).collection("Added_Channels").document(channel_id).set(Collections.singletonMap("exists", true))
+                    .addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            Toast.makeText(ViewChannel.this, "Channel Subscribed", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } catch(Exception ex){
+            Log.e("FireBase Error", ex.getMessage());
+            Toast.makeText(this, "Already Subscribed", Toast.LENGTH_SHORT).show();
+        }
     }
 }

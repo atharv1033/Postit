@@ -103,7 +103,6 @@ public class MyChannels extends AppCompatActivity {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             channels_modelList.clear();
-                            Toast.makeText(MyChannels.this, "Inside", Toast.LENGTH_SHORT).show();
                             for(DocumentSnapshot doc : task.getResult()) {
                                 Channels_Model channel = doc.toObject(Channels_Model.class);
                                 channel.setId(doc.getId());
@@ -113,7 +112,6 @@ public class MyChannels extends AppCompatActivity {
                         }
                     });
         } catch(Exception ex){
-            Toast.makeText(this, "Firebase error", Toast.LENGTH_SHORT).show();
             Log.e("FireBase Error", ex.getMessage());
         }
     }

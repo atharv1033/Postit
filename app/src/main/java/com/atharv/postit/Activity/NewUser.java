@@ -12,7 +12,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class NewUser extends AppCompatActivity {
@@ -47,15 +49,28 @@ public class NewUser extends AppCompatActivity {
         fullName = fullName_editText.getText().toString();
         mobileNumber = mobileNumber_editText.getText().toString();
 
+        if(userName.length() > 15){
+            Toast.makeText(this, "Username must not be more than 15 characters", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if(userName.contains("@") || userName.contains(".com")){
             Toast.makeText(this, "Cannot Contain @ or .com", Toast.LENGTH_SHORT).show();
             return;
         }
 
+        List<String> searchArray = new ArrayList<>();
+        String temp_str = "";
+        for(int i=0; i< userName.length() ; i++) {
+            temp_str = temp_str + userName.charAt(i);
+            searchArray.add(temp_str);
+        }
+
         Map<String,Object> userData = new HashMap<>();
-        userData.put("Full Name",fullName);
-        userData.put("Mob no.",mobileNumber);
+        userData.put("Full_Name",fullName);
+        userData.put("Mob_no.",mobileNumber);
         userData.put("email",email);
+        userData.put("searchArray",searchArray);
 
         try{
             db.collection("Users").document(userName).set(userData);
