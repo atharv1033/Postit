@@ -1,5 +1,6 @@
 package com.atharv.postit.Activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,8 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.atharv.postit.R;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -46,8 +49,8 @@ public class NewChannel extends AppCompatActivity {
         channelTopic = editText_ChannelTopic.getText().toString();
         channelTags = editText_ChannelTags.getText().toString();
 
-        if (channelName.length() > 10){
-            Toast.makeText(this, "Name should be less than 10 characters", Toast.LENGTH_SHORT).show();
+        if (channelName.length() > 15){
+            Toast.makeText(this, "Name should be less than 15 characters", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -83,7 +86,13 @@ public class NewChannel extends AppCompatActivity {
             channel.put("searchArray",searchArray);
 
             try {
-                db.collection("Channels").add(channel);
+                db.collection("Channels").add(channel)
+                        .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                                startActivity(new Intent(NewChannel.this, Channels_MainActivity.class));
+                            }
+                        });
             } catch (Exception ex) {
                 Log.e("FireBase Error", ex.getMessage());
             }

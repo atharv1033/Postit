@@ -14,10 +14,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.atharv.postit.Adapter.Channels_Adapter;
 import com.atharv.postit.Model.Channels_Model;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.atharv.postit.R;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -41,8 +46,9 @@ public class Channels_MainActivity extends AppCompatActivity
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseUser user = firebaseAuth.getCurrentUser();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    String username , email ;
+    String username , email;
     String channel_id;
+    NavigationView navigationView;
 
     //TextView header_username, header_email;
 
@@ -64,7 +70,7 @@ public class Channels_MainActivity extends AppCompatActivity
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         //Main Code For authentication starts here
@@ -98,19 +104,6 @@ public class Channels_MainActivity extends AppCompatActivity
                                 }
                             }
                         });
-
-
-
-
-
-            /*NavigationView navigationView1 = (NavigationView) findViewById(R.id.nav_view);
-            View headerView1 = (View) navigationView1.inflateHeaderView(R.layout.nav_header_channels);
-
-            header_username = headerView1.findViewById(R.id.header_username);
-            header_email = headerView1.findViewById(R.id.header_email);
-
-            header_username.setText(username);
-            header_email.setText(email);*/
 
         }
 
@@ -179,6 +172,23 @@ public class Channels_MainActivity extends AppCompatActivity
             Log.e("onResume FireBase",ex.getMessage());
         }
 
+        View headView = navigationView.getHeaderView(0);
+
+        TextView header_username = headView.findViewById(R.id.header_username);
+        TextView header_email = headView.findViewById(R.id.header_email);
+        ImageView user_dp = headView.findViewById(R.id.UserDp_imageView);
+        String user_dp_url = user.getPhotoUrl().toString();
+
+        Glide
+                .with(Channels_MainActivity.this)
+                .load(user_dp_url)
+                .apply(new RequestOptions().circleCrop()
+                .placeholder(R.mipmap.ic_launcher_round))
+                .into(user_dp);
+
+        header_username.setText(username);
+        header_email.setText(email);
+
     }
 
     @Override
@@ -243,7 +253,7 @@ public class Channels_MainActivity extends AppCompatActivity
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_changeAccount) {
-            AuthUI.getInstance().delete(this)
+           user.delete()
                     .addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
